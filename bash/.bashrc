@@ -1,8 +1,8 @@
-# /*---                             1743973127 5048 .bashrc  ---*/
+# /*---                             2022609147 4717 .bashrc  ---*/
 # /*---                                                      ---*/
 # /*---                                                      ---*/
-# /*---             Created: Feb  7 20:04:57 2023 by pducos  ---*/
-# /*---             Updated: Feb  7 22:52:53 2023 by pducos  ---*/
+# /*---             Created: Feb  7 22:39:52 2023 by pducos  ---*/
+# /*---             Updated: Feb  7 23:14:16 2023 by pducos  ---*/
 
 if [ -z "$PS1" ]; then
     return
@@ -110,15 +110,15 @@ function strgrep() {
     local pattern="$1"; shift
 
     grep \
-        -r                        \
-        --color=auto              \
-        --exclude-dir={.git,.svn} \
-        --include \*$suffix       \
+        -r                               \
+        --color=auto                     \
+        --exclude-dir={.git,.svn}        \
+        --include \*$suffix              \
         -e "$pattern" "$@" . 2>/dev/null \
             ||  {
-                    [[ $? -eq 1 ]]                      \
-                    && printf >&2 " - No match found\n" \
-                    || printf >&2 " + Grep returned $?\n"
+                    [[ $? -eq 1 ]]                          \
+                        && printf >&2 " - No match found\n" \
+                        || printf >&2 " + Grep returned $?\n"
                 }
 }
 
@@ -138,19 +138,19 @@ function memo() {
     case "$action" in
         add)
             [ $# -ne 1 ] \
-                && printf >&2 " - error: Missing argument\n" \
+                && printf >&2 " - Missing argument\n" \
                 && return 1
 
             printf "${1}\n" >> "$memo_file"
         ;;
         del)
             [ $# -ne 1 ] \
-                && printf >&2 " - error: Missing argument\n" \
+                && printf >&2 " - Missing argument\n" \
                 && return 1
 
             memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
-                && printf >&2 " - error: Not found\n" \
+                && printf >&2 " - Not found\n" \
                 && return 1
 
             sed -i -n "${1}d" "$memo_file" \
@@ -158,12 +158,12 @@ function memo() {
         ;;
         cp)
             [ $# -ne 1 ] \
-                && printf >&2 " - error: Missing argument\n" \
+                && printf >&2 " - Missing argument\n" \
                 && return 1
 
             memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
-                && printf >&2 " - error: Not found\n" \
+                && printf >&2 " - Not found\n" \
                 && return 1
 
             printf "$memo" | pbcopy
