@@ -1,0 +1,35 @@
+theme = "serika-dark"
+
+[editor]
+line-number = "relative"
+rulers = [101]
+mouse = true
+idle-timeout = 0
+completion-trigger-len = 1
+true-color = true
+shell = [ "bash", "-c" ]
+scroll-lines = 5
+bufferline = "always"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.statusline]
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+separator = "|"
+left = [ "mode", "spinner", "diagnostics" ]
+center = [ "file-name", "file-type", "file-encoding" ]
+right = [ "selections", "primary-selection-length", "position" ]
+
+[editor.lsp]
+display-messages = true
+
+[editor.file-picker]
+hidden = false
+
+[keys.insert]
+A-x = "normal_mode"
