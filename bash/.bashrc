@@ -64,19 +64,19 @@ function stamp() {
 # DESCRIPTION
 # 		Not working
 # 
-	[[ $# -lt 1 ]] \
+    [[ $# -lt 1 ]] \
         && printf >&2 "Usage: stamp <file_name>\n" \
         && return 1
-	
-	[[ ! -f "$@" ]] \
+
+    [[ ! -f "$@" ]] \
         && printf >&2 " - No such file or directory\n" \
         && return 1
-   
-	local time_cr=$(stat -f "%SB" $@)
+
+    local time_cr=$(stat -f "%SB" $@)
     local time_up=$(stat -f "%Sa" $@)
     local creator=$(stat -f "%Su" $@)
 
-	<< EOF cat >> $@
+    << EOF cat >> $@
 # /*---  $(printf "%50s  ---*/" "$(cksum $@)")
 # /*---  $(printf "%50s  ---*/"                 "")
 # /*---  $(printf "%50s  ---*/"                 "")
@@ -92,22 +92,22 @@ function strgrep() {
 #        Searches for <pattern> in files ending in <suffix> in the current directory,
 # 
     [[ $# -lt 2 ]] \
-		&& printf >&2 "Usage: strgrep <suffix> <pattern> [<grep_options>]\n" \
-		&& return 1
+        && printf >&2 "Usage: strgrep <suffix> <pattern> [<grep_options>]\n" \
+        && return 1
     
-	local suffix="$1"; shift
+    local suffix="$1"; shift
     local pattern="$1"; shift
-    
-	grep \
+
+    grep \
         -r                        \
         --color=auto              \
         --exclude-dir={.git,.svn} \
         --include \*$suffix       \
         -e "$pattern" "$@" . 2>/dev/null \
             ||  {
-                    [[ $? -eq 1 ]]                             \
-                        && printf >&2 " - No match found\n"    \
-                        || printf >&2 " + Grep returned $?\n"
+                    [[ $? -eq 1 ]]                      \
+                    && printf >&2 " - No match found\n" \
+                    || printf >&2 " + Grep returned $?\n"
                 }
 }
 
@@ -129,33 +129,33 @@ function memo() {
             [ $# -ne 1 ] \
                 && printf >&2 " - error: Missing argument\n" \
                 && return 1
-            
-			printf "${1}\n" >> "$memo_file"
+
+            printf "${1}\n" >> "$memo_file"
         ;;
         del)
             [ $# -ne 1 ] \
                 && printf >&2 " - error: Missing argument\n" \
                 && return 1
-            
-			memo="$(sed -n "${1}p" "$memo_file")"
+
+            memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
                 && printf >&2 " - error: Not found\n" \
                 && return 1
 
             sed -i -n "${1}d" "$memo_file" \
-            	&& printf >&2 " + Deleting '$memo'\n"
-		;;
+                && printf >&2 " + Deleting '$memo'\n"
+        ;;
         cp)
             [ $# -ne 1 ] \
-            	&& printf >&2 " - error: Missing argument\n" \
+                && printf >&2 " - error: Missing argument\n" \
                 && return 1
-            
-			memo="$(sed -n "${1}p" "$memo_file")"
+
+            memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
-            	&& printf >&2 " - error: Not found\n" \
-            	&& return 1
-            
-			printf "$memo" | pbcopy
+                && printf >&2 " - error: Not found\n" \
+                && return 1
+
+            printf "$memo" | pbcopy
             printf >&2 " + Copied\n"
         ;;
         *)
