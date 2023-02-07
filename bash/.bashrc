@@ -1,6 +1,8 @@
-# /* pducos `.bashrc`
-#  * Created: 37.02.2023
-#  */
+# /*---                             3268100900 4768 .bashrc  ---*/
+# /*---                                                      ---*/
+# /*---                                                      ---*/
+# /*---             Created: Feb  7 20:04:57 2023 by pducos  ---*/
+# /*---             Updated: Feb  7 22:18:10 2023 by pducos  ---*/
 
 if [ -z "$PS1" ]; then
     return
@@ -59,43 +61,41 @@ alias c....='cd ../../../..'
 #	/*--- Functions                                            ---*/
 #	/*------------------------------------------------------------*/
 
-# function stamp() {
-# # 
-# # DESCRIPTION
-# # 		Add a custom header to files
-# # 
-#     [[ $# -lt 1 ]] \
-#         && printf >&2 "Usage: stamp <file_name>\n" \
-#         && return 1
+function stamp() {
 # 
-#     [[ ! -f "$@" ]] \
-#         && printf >&2 " - No such file or directory\n" \
-#         && return 1
+# DESCRIPTION
+#         Add a custom header to files
 # 
-#     local time_cr=$(stat -f "%SB" $@)
-#     local time_up=$(stat -f "%Sa" $@)
-#     local creator=$(stat -f "%Su" $@)
-# 
-#     (sed -n '1p' $@ | grep -qF "# /*---" 2> /dev/null) \
-#         && sed -i -e '1,6d' \
-#         $@ && rm $@-e
-# 
-#     local file="$@"
-#     local temp_file="$(mktemp)"
-# 
-#     << EOF cat >> $temp_file
-# # /*---  $(printf "%50s  ---*/"                   "$(cksum $@)")
-# # /*---  $(printf "%50s  ---*/"                              "")
-# # /*---  $(printf "%50s  ---*/"                              "")
-# # /*---  $(printf "%50s  ---*/" "Created: $time_cr by $creator")
-# # /*---  $(printf "%50s  ---*/"    "Updated: $time_up by $USER")
-# 
-# $(cat "$@")
-# EOF
-#     sed -i -e '1,$d' $@
-#     cat $temp_file >> $@
-#     rm $temp_file
-# }
+    [[ $# -lt 1 ]] \
+        && printf >&2 "Usage: stamp <file_name>\n" \
+        && return 1
+
+    [[ ! -f "$@" ]] \
+        && printf >&2 " - No such file or directory\n" \
+        && return 1
+
+    local time_cr=$(stat -f "%SB" $@)
+    local time_up=$(stat -f "%Sa" $@)
+    local creator=$(stat -f "%Su" $@)
+
+    local file="$@"
+    local temp_file="$(mktemp)"
+
+    << EOF cat >> $temp_file
+# /*---  $(printf "%50s  ---*/"                   "$(cksum $@)")
+# /*---  $(printf "%50s  ---*/"                              "")
+# /*---  $(printf "%50s  ---*/"                              "")
+# /*---  $(printf "%50s  ---*/" "Created: $time_cr by $creator")
+# /*---  $(printf "%50s  ---*/"    "Updated: $time_up by $USER")
+EOF
+    
+    grep -m 1 "/*--- " $@ &> /dev/null  \
+        && sed -n '6,$p' $@ >> $temp_file \
+        || cat $@ >> $temp_file
+
+    cat $temp_file > $@ 
+    rm $temp_file
+}
 
 function strgrep() {
 # 
