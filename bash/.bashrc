@@ -58,11 +58,20 @@ alias c....='cd ../../../..'
 #	/*------------------------------------------------------------*/
 #	/*--- Functions                                            ---*/
 #	/*------------------------------------------------------------*/
-
+prepend_file() {
+  local file="$1"
+  local temp_file="$(mktemp)"
+  cat << EOF >> "$temp_file"
+yes
+$(cat "$file")
+EOF
+  cat "$temp_file" > "$file"
+  rm "$temp_file"
+}
 function stamp() {
 # 
 # DESCRIPTION
-# 		Not working
+# 		Add a custom header to files
 # 
     [[ $# -lt 1 ]] \
         && printf >&2 "Usage: stamp <file_name>\n" \
@@ -76,14 +85,23 @@ function stamp() {
     local time_up=$(stat -f "%Sa" $@)
     local creator=$(stat -f "%Su" $@)
 
-    << EOF cat >> $@
-# /*---  $(printf "%50s  ---*/" "$(cksum $@)")
-# /*---  $(printf "%50s  ---*/"                 "")
-# /*---  $(printf "%50s  ---*/"                 "")
-# /*---  $(printf "%50s  ---*/" "Created: $time_cr")
-# /*---  $(printf "%50s  ---*/" "Updated: $time_up")
+    (sed -n '1p' $@ | grep -qF "# /*---" 2> /dev/null) \
+        && sed -i -e '1,6d' $@
 
+    local file="$@"
+    local temp_file="$(mktemp)"
+
+    << EOF cat >> $temp_file
+# /*---  $(printf "%50s  ---*/"                   "$(cksum $@)")
+# /*---  $(printf "%50s  ---*/"                              "")
+# /*---  $(printf "%50s  ---*/"                              "")
+# /*---  $(printf "%50s  ---*/" "Created: $time_cr by $creator")
+# /*---  $(printf "%50s  ---*/"    "Updated: $time_up by $USER")
+
+$(cat "$@")
 EOF
+    cat $temp_file > $@
+    rm $temp_file
 }
 
 function strgrep() {
