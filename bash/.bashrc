@@ -77,8 +77,6 @@ function stamp() {
     local time_cr=$(stat -f "%SB" $@)
     local time_up=$(stat -f "%Sa" $@)
     local creator=$(stat -f "%Su" $@)
-
-    local file="$@"
     local temp_file="$(mktemp)"
 
     << EOF cat >> $temp_file
