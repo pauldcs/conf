@@ -1,18 +1,20 @@
-# /*------------------------------------------------------------*/
-# /*---  Darwin arm64               2509460063 5302 .bashrc  ---*/
+# /*---  Darwin arm64               1432333475 5447 .bashrc  ---*/
 # /*---                                                      ---*/
 # /*---                                                      ---*/
-# /*---             Created: Feb  8 01:16:02 2023 by pducos  ---*/
-# /*---             Updated: Feb  8 01:21:15 2023 by pducos  ---*/
-# /*------------------------------------------------------------*/
+# /*---             Created: Feb  8 10:33:16 2023 by pducos  ---*/
+# /*---             Updated: Feb  8 13:55:02 2023 by pducos  ---*/
 
 shopt -s checkwinsize
 
-#	/*------------------------------------------------------------*/
-#	/*--- Default                                              ---*/
-#	/*------------------------------------------------------------*/
+# /*------------------------------------------------------------*/
+# /*--- Default                                              ---*/
+# /*------------------------------------------------------------*/
 
 export EDITOR=hx
+
+export EDITOR=hx
+export PATH=/opt/homebrew/bin:$PATH
+export PATH=/opt/homebrew/sbin:$PATH
 
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
@@ -22,34 +24,30 @@ export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
-Cyan='\033[1;36m'
+ Cyan='\033[1;36m'
 Green='\033[1;32m'
-Red='\033[1;31m'
-Blue='\033[1;34m'
+  Red='\033[1;31m'
+ Blue='\033[1;34m'
 Reset='\033[0m'
 
-if [ $UID -ne 0 ];
-    then
-        PS1="$Cyan\u$Reset:$Green\W$Reset $SHELL % "
-    else
-        PS1="$Red\u$Reset:$Green\W$Reset $SHELL # "
-fi
+[ $UID -ne 0 ] \
+    && PS1="$Cyan\u$Reset:$Green\W$Reset $SHELL % " \
+    || PS1="$Red\u$Reset:$Green\W$Reset $SHELL # " 
 
 # /*------------------------------------------------------------*/
 # /*--- Aliases                                              ---*/
 # /*------------------------------------------------------------*/
 
-alias root='sudo bash'
-alias "tree"="tree -C"
-alias ll='ls -alFh --color'
-alias ls='ls -lF --color'
-alias la='ls -Ah --color'
-alias l='ls -CF --color'
-alias "e"="hx"
-alias "ee"="hx ."
-alias ..='cd ..'
-alias c..='cd ../..'
-alias c...='cd ../../..'
+alias     e="$EDITOR"
+alias    ee="$EDITOR ."
+alias  root="sudo $SHELL"
+alias    ll='ls -alFh --color'
+alias    ls='ls -lF --color'
+alias    la='ls -Ah --color'
+alias     l='ls -CF --color'
+alias    ..='cd ..'
+alias   c..='cd ../..'
+alias  c...='cd ../../..'
 alias c....='cd ../../../..'
 
 # /*------------------------------------------------------------*/
@@ -68,40 +66,33 @@ function stamp() {
     [[ ! -f "$@" ]] \
         && printf >&2 " - No such file or directory\n" \
         && return 1
-    
-    [[ ! -w "$@" ]] \
-        && printf >&2 " - Permission denied\n" \
-        && return 1
-    
-    local time_cr=$(stat -f "%SB" $@)
-    local time_up=$(stat -f "%Sa" $@)
-    local creator=$(stat -f "%Su" $@)
 
-    local file="$@"
-    local temp_file="$(mktemp)"
+    local tmp_file="$(mktemp)"
+    local  time_cr="$(stat -f '%SB' $@)"
+    local  time_up="$(stat -f '%Sa' $@)"
+    local  creator="$(stat -f '%Su' $@)"
 
-    << EOF cat >> $temp_file
-# /*------------------------------------------------------------*/
+ << __EOF__ cat > $tmp_file
 # /*---  $(printf "%-20s%30s  ---*/" "$(uname -ms)" "$(cksum $@)")
 # /*---  $(printf      "%50s  ---*/"                           "")
 # /*---  $(printf      "%50s  ---*/"                           "")
 # /*---  $(printf      "%50s  ---*/" "Created: $time_cr by $creator")
 # /*---  $(printf      "%50s  ---*/" "Updated: $time_up by $USER")
-# /*------------------------------------------------------------*/
-EOF
+__EOF__
     
-    grep -m 1 "/*--- " $@ &> /dev/null  \
-        && sed -n '8,$p' $@ >> $temp_file \
-        || cat $@ >> $temp_file
+    grep -m 1 "/*--- " $@ &> /dev/null    \
+        && sed -n '6,$p' $@ >> $tmp_file \
+        || cat $@ >> $tmp_file
 
-    cat $temp_file > $@ 
-    rm $temp_file
+    cat $tmp_file > $@ 
+    rm $tmp_file
 }
 
 function strgrep() {
 # 
 # DESCRIPTION
-#        Searches for <pattern> in files ending in <suffix> in the current directory,
+#        Searches for <pattern> in files ending in
+#	 	 <suffix> in the current directory,
 # 
     [[ $# -lt 2 ]] \
         && printf >&2 "Usage: strgrep <suffix> <pattern> [<grep_options>]\n" \
@@ -111,15 +102,15 @@ function strgrep() {
     local pattern="$1"; shift
 
     grep \
-        -r                        \
-        --color=auto              \
-        --exclude-dir={.git,.svn} \
-        --include \*$suffix       \
+        -r                               \
+        --color=auto                     \
+        --exclude-dir={.git,.svn}        \
+        --include \*$suffix              \
         -e "$pattern" "$@" . 2>/dev/null \
             ||  {
-                    [[ $? -eq 1 ]]                      \
-                    && printf >&2 " - No match found\n" \
-                    || printf >&2 " + Grep returned $?\n"
+                    [[ $? -eq 1 ]]                          \
+                        && printf >&2 " - No match found\n" \
+                        || printf >&2 " + Grep returned $?\n"
                 }
 }
 
@@ -139,19 +130,19 @@ function memo() {
     case "$action" in
         add)
             [ $# -ne 1 ] \
-                && printf >&2 " - error: Missing argument\n" \
+                && printf >&2 " - Missing argument\n" \
                 && return 1
 
             printf "${1}\n" >> "$memo_file"
         ;;
         del)
             [ $# -ne 1 ] \
-                && printf >&2 " - error: Missing argument\n" \
+                && printf >&2 " - Missing argument\n" \
                 && return 1
 
             memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
-                && printf >&2 " - error: Not found\n" \
+                && printf >&2 " - Not found\n" \
                 && return 1
 
             sed -i -n "${1}d" "$memo_file" \
@@ -159,12 +150,12 @@ function memo() {
         ;;
         cp)
             [ $# -ne 1 ] \
-                && printf >&2 " - error: Missing argument\n" \
+                && printf >&2 " - Missing argument\n" \
                 && return 1
 
             memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
-                && printf >&2 " - error: Not found\n" \
+                && printf >&2 " - Not found\n" \
                 && return 1
 
             printf "$memo" | pbcopy
@@ -176,4 +167,22 @@ function memo() {
     esac
 }
 
-[ -r "/etc/bashrc_$TERM_PROGRAM" ] && . "/etc/bashrc_$TERM_PROGRAM"
+# Mimic of 'tree' command
+_tree() {
+    [[ $# -lt 1 ]] \
+        && printf >&2 "Usage: _tree <dir>\n" \
+        && return 1
+
+    for f in "$1"/*;
+        do
+            [ -d "$f" ] \
+                && printf "$2$Blue$f$Reset/\n" \
+                && _tree "$f" "$2     "        \
+                || {
+                        printf "$2"
+                        line=$(ls -l $f \
+                            | awk '{printf "%s [%8d] %s", $1, $5, $9}')
+                        echo "$line"
+                    }
+    done
+}
