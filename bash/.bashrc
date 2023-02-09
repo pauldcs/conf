@@ -1,8 +1,8 @@
-# /*---  Darwin 22.1.0 arm64                                       499547123 6149 .bashrc  ---*/
-# /*---                                                                                    ---*/
+# /*---  Darwin 22.1.0 arm64                                      2834907631 6153 .bashrc  ---*/
+# /*---  macbook-pro-2.local                                                               ---*/
 # /*---                                                                                    ---*/
 # /*---                                           Created: Feb  8 10:33:16 2023 by pducos  ---*/
-# /*---                                           Updated: Feb  9 16:17:44 2023 by pducos  ---*/
+# /*---                                           Updated: Feb  9 18:45:05 2023 by pducos  ---*/
 
 shopt -s checkwinsize
 
@@ -55,7 +55,7 @@ alias c....='cd ../../../..'
 function stamp() {
 # 
 # DESCRIPTION
-#         Add a custom header to files
+#         Add a header to files
 # 
     [[ $# -lt 1 ]] \
         && printf >&2 "Usage: stamp <file_name>\n" \
@@ -82,16 +82,20 @@ function stamp() {
             }
 
  << __EOF__ cat > $tmp_file
-# /*---  $(printf "%-40s%40s  ---*/"     "$(uname -msr)" "$(cksum $@)")
-# /*---  $(printf      "%80s  ---*/"                                "")
-# /*---  $(printf      "%80s  ---*/"                                "")
-# /*---  $(printf      "%80s  ---*/"   "Created: $time_cr by $creator")
-# /*---  $(printf      "%80s  ---*/"   "Updated: $time_up by $USER"   )
+/*---  $(printf "%-40s%40s  ---*/" "$(uname -msr)"                "$(cksum $@)")
+/*---  $(printf "%-40s%40s  ---*/" "$(hostname)"                             "")
+/*---  $(printf      "%80s  ---*/"                                           "")
+/*---  $(printf      "%80s  ---*/"              "Created: $time_cr by $creator")
+/*---  $(printf      "%80s  ---*/"             "Updated: $time_up by $(whoami)")
 __EOF__
     
     grep -m 1 "/*--- " $@ &> /dev/null   \
         && sed -n '6,$p' $@ >> $tmp_file \
         || cat $@ >> $tmp_file
+
+    # we cat the original file before overwriting it with the stamped one to
+    # prevent any permanent losses in the case of a bug
+    cat $@
 
     cat $tmp_file > $@ 
     rm $tmp_file
