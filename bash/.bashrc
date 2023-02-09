@@ -67,6 +67,21 @@ function stamp() {
         && printf >&2 " - No such file or directory\n" \
         && return 1
 
+# LINUX
+#    local tmp_file="$(mktemp)"
+#    local  time_cr="$(stat -c '%w' $@)"
+#    local  time_up="$(stat -c '%y' $@)"
+#    local  creator="$(stat -c '%U' $@)"
+#
+# << __EOF__ cat > $tmp_file
+## /*---  $(printf "%-40s%40s  ---*/"     "$(uname -msr)" "$(cksum $@)")
+## /*---  $(printf      "%80s  ---*/"                                "")
+## /*---  $(printf      "%80s  ---*/"                                "")
+## /*---  $(printf      "%80s  ---*/"   "Created: $time_cr by $creator")
+## /*---  $(printf      "%80s  ---*/"   "Updated: $time_up by $USER"   )
+#__EOF__
+
+
     local tmp_file="$(mktemp)"
     local  time_cr="$(stat -f '%SB' $@)"
     local  time_up="$(stat -f '%Sa' $@)"
