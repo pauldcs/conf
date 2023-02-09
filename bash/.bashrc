@@ -1,8 +1,8 @@
-# /*---  Darwin arm64               1432333475 5447 .bashrc  ---*/
-# /*---                                                      ---*/
-# /*---                                                      ---*/
-# /*---             Created: Feb  8 10:33:16 2023 by pducos  ---*/
-# /*---             Updated: Feb  8 13:55:02 2023 by pducos  ---*/
+# /*---  Linux 5.15.0-58-generic x86_64                           1900747184 5488 .bashrc  ---*/
+# /*---                                                                                    ---*/
+# /*---                                                                                    ---*/
+# /*---                                                              Created: - by pducos  ---*/
+# /*---                            Updated: 2023-02-09 15:59:51.967313452 +0100 by pducos  ---*/
 
 shopt -s checkwinsize
 
@@ -174,6 +174,7 @@ function memo() {
                 && return 1
 
             printf "$memo" | pbcopy
+            # linux printf "$memo" | xclip -selection c
             printf >&2 " + Copied\n"
         ;;
         *)
