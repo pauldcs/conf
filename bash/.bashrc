@@ -1,16 +1,14 @@
-# /*---  Linux 5.15.0-58-generic x86_64                           1900747184 5488 .bashrc  ---*/
+# /*---  Darwin 22.1.0 arm64                                       499547123 6149 .bashrc  ---*/
 # /*---                                                                                    ---*/
 # /*---                                                                                    ---*/
-# /*---                                                              Created: - by pducos  ---*/
-# /*---                            Updated: 2023-02-09 15:59:51.967313452 +0100 by pducos  ---*/
+# /*---                                           Created: Feb  8 10:33:16 2023 by pducos  ---*/
+# /*---                                           Updated: Feb  9 16:17:44 2023 by pducos  ---*/
 
 shopt -s checkwinsize
 
 # /*------------------------------------------------------------*/
 # /*--- Default                                              ---*/
 # /*------------------------------------------------------------*/
-
-export EDITOR=hx
 
 export EDITOR=hx
 export PATH=/opt/homebrew/bin:$PATH
@@ -67,35 +65,31 @@ function stamp() {
         && printf >&2 " - No such file or directory\n" \
         && return 1
 
-# LINUX
-#    local tmp_file="$(mktemp)"
-#    local  time_cr="$(stat -c '%w' $@)"
-#    local  time_up="$(stat -c '%y' $@)"
-#    local  creator="$(stat -c '%U' $@)"
-#
-# << __EOF__ cat > $tmp_file
-## /*---  $(printf "%-40s%40s  ---*/"     "$(uname -msr)" "$(cksum $@)")
-## /*---  $(printf      "%80s  ---*/"                                "")
-## /*---  $(printf      "%80s  ---*/"                                "")
-## /*---  $(printf      "%80s  ---*/"   "Created: $time_cr by $creator")
-## /*---  $(printf      "%80s  ---*/"   "Updated: $time_up by $USER"   )
-#__EOF__
-
-
-    local tmp_file="$(mktemp)"
-    local  time_cr="$(stat -f '%SB' $@)"
-    local  time_up="$(stat -f '%Sa' $@)"
-    local  creator="$(stat -f '%Su' $@)"
+    [[ $(uname) == 'Linux' ]] \
+        && {
+                local tmp_file="$(mktemp)"
+                local  time_cr="$(stat -c '%w' $@)"
+                local  time_up="$(stat -c '%y' $@)"
+                local  creator="$(stat -c '%U' $@)"
+            }
+    
+    [[ $(uname) == 'Darwin' ]] \
+        && {
+                local tmp_file="$(mktemp)"
+                local  time_cr="$(stat -f '%SB' $@)"
+                local  time_up="$(stat -f '%Sa' $@)"
+                local  creator="$(stat -f '%Su' $@)"
+            }
 
  << __EOF__ cat > $tmp_file
-# /*---  $(printf "%-20s%30s  ---*/" "$(uname -ms)" "$(cksum $@)")
-# /*---  $(printf      "%50s  ---*/"                           "")
-# /*---  $(printf      "%50s  ---*/"                           "")
-# /*---  $(printf      "%50s  ---*/" "Created: $time_cr by $creator")
-# /*---  $(printf      "%50s  ---*/" "Updated: $time_up by $USER")
+# /*---  $(printf "%-40s%40s  ---*/"     "$(uname -msr)" "$(cksum $@)")
+# /*---  $(printf      "%80s  ---*/"                                "")
+# /*---  $(printf      "%80s  ---*/"                                "")
+# /*---  $(printf      "%80s  ---*/"   "Created: $time_cr by $creator")
+# /*---  $(printf      "%80s  ---*/"   "Updated: $time_up by $USER"   )
 __EOF__
     
-    grep -m 1 "/*--- " $@ &> /dev/null    \
+    grep -m 1 "/*--- " $@ &> /dev/null   \
         && sed -n '6,$p' $@ >> $tmp_file \
         || cat $@ >> $tmp_file
 
@@ -173,8 +167,11 @@ function memo() {
                 && printf >&2 " - Not found\n" \
                 && return 1
 
-            printf "$memo" | pbcopy
-            # linux printf "$memo" | xclip -selection c
+            [[ $(uname) == 'Darwin' ]] \
+                && printf "$memo" | pbcopy
+            [[ $(uname) == 'Linux' ]] \
+                && printf "$memo" | xclip -selection c
+            
             printf >&2 " + Copied\n"
         ;;
         *)
