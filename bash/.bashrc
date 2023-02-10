@@ -14,8 +14,8 @@ export EDITOR=hx
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
 
-export HISTSIZE=1000000
-export HISTFILESIZE=1000000000
+export HISTSIZE=100000
+export HISTFILESIZE=100000000
 
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
