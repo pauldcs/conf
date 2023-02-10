@@ -1,10 +1,11 @@
-/*---  Darwin 22.1.0 arm64                                      2008587463 6322 .bashrc  ---*/
-/*---  macbook-pro-2.local                                                               ---*/
+/*---                                                           3548807796 6682 .bashrc  ---*/
 /*---                                                                                    ---*/
-/*---                                           Created: Feb 10 02:15:46 2023 by pducos  ---*/
-/*---                                           Updated: Feb 10 05:07:56 2023 by pducos  ---*/
+/*---                                                                                    ---*/
+/*---                                           Created: Feb 10 14:49:57 2023 by pducos  ---*/
+/*---                                           Updated: Feb 10 14:49:57 2023 by pducos  ---*/
 
 shopt -s checkwinsize
+shopt -s autocd
 
 # /*------------------------------------------------------------*/
 # /*--- Default                                              ---*/
@@ -17,13 +18,19 @@ export PATH=/opt/homebrew/sbin:$PATH
 export HISTSIZE=100000
 export HISTFILESIZE=100000000
 
-export LESS_TERMCAP_mb=$'\E[01;31m'
-export LESS_TERMCAP_md=$'\E[01;31m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[01;44;33m'
-export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[01;32m'
+export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
+export LESS_TERMCAP_md=$(tput bold; tput setaf 6) # cyan
+export LESS_TERMCAP_me=$(tput sgr0)
+export LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4) # yellow on blue
+export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
+export LESS_TERMCAP_us=$(tput smul; tput bold; tput setaf 7) # white
+export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
+export LESS_TERMCAP_mr=$(tput rev)
+export LESS_TERMCAP_mh=$(tput dim)
+export LESS_TERMCAP_ZN=$(tput ssubm)
+export LESS_TERMCAP_ZV=$(tput rsubm)
+export LESS_TERMCAP_ZO=$(tput ssupm)
+export LESS_TERMCAP_ZW=$(tput rsupm)
 
  Cyan='\033[1;36m'
 Green='\033[1;32m'
@@ -31,9 +38,7 @@ Green='\033[1;32m'
  Blue='\033[1;34m'
 Reset='\033[0m'
 
-[ $UID -ne 0 ] \
-    && PS1="$Cyan\u$Reset:$Green\W$Reset $SHELL % " \
-    || PS1="$Red\u$Reset:$Green\W$Reset $SHELL # " 
+PS1="$Cyan\u$Reset::\s-\v [$Green\W$Reset] \j % "
 
 # /*------------------------------------------------------------*/
 # /*--- Aliases                                              ---*/
@@ -41,12 +46,11 @@ Reset='\033[0m'
 
 alias     e="$EDITOR"
 alias    ee="$EDITOR ."
-alias  root="sudo $SHELL"
 alias    ll='ls -alFh --color'
 alias    ls='ls -lF --color'
 alias    la='ls -Ah --color'
 alias     l='ls -CF --color'
-alis     c.='cd -'
+alias    c.='cd -'
 alias    ..='cd ..'
 alias   c..='cd ../..'
 alias  c...='cd ../../..'
@@ -86,8 +90,8 @@ function stamp() {
             }
 
  << __EOF__ cat > $tmp_file
-/*---  $(printf "%-40s%40s  ---*/" "$(uname -msr)"                "$(cksum $@)")
-/*---  $(printf "%-40s%40s  ---*/" "$(hostname)"                             "")
+/*---  $(printf "%-40s%40s  ---*/"              ""                "$(cksum $@)")
+/*---  $(printf "%-40s%40s  ---*/"            ""                             "")
 /*---  $(printf      "%80s  ---*/"                                           "")
 /*---  $(printf      "%80s  ---*/"              "Created: $time_cr by $creator")
 /*---  $(printf      "%80s  ---*/"             "Updated: $time_up by $(whoami)")
