@@ -1,8 +1,8 @@
-/*---                                                           3209712199 807 .inputrc  ---*/
-/*---                                                                                    ---*/
-/*---                                                                                    ---*/
-/*---                                           Created: Feb 10 14:49:41 2023 by pducos  ---*/
-/*---                                           Updated: Feb 10 14:49:41 2023 by pducos  ---*/
+#/*---                                                           3209712199 807 .inputrc  ---*/
+#/*---                                                                                    ---*/
+#/*---                                                                                    ---*/
+#/*---                                           Created: Feb 10 14:49:41 2023 by pducos  ---*/
+#/*---                                           Updated: Feb 10 14:49:41 2023 by pducos  ---*/
 
 #cat .zsh_history | cut -c 16- > .bash_history
 

@@ -1,8 +1,10 @@
-/*---                                                           3548807796 6682 .bashrc  ---*/
-/*---                                                                                    ---*/
-/*---                                                                                    ---*/
-/*---                                           Created: Feb 10 14:49:57 2023 by pducos  ---*/
-/*---                                           Updated: Feb 10 14:49:57 2023 by pducos  ---*/
+#/*---                                                           3548807796 6682 .bashrc  ---*/
+#/*---                                                                                    ---*/
+#/*---                                                                                    ---*/
+#/*---                                           Created: Feb 10 14:49:57 2023 by pducos  ---*/
+#/*---                                           Updated: Feb 10 14:49:57 2023 by pducos  ---*/
+
+clear
 
 shopt -s checkwinsize
 shopt -s autocd
@@ -38,7 +40,7 @@ Green='\033[1;32m'
  Blue='\033[1;34m'
 Reset='\033[0m'
 
-PS1="$Cyan\u$Reset::\s-\v [$Green\W$Reset] \j % "
+PS1="$Cyan\u$Reset::\s-\v($Green\W$Reset) \j$ "
 
 # /*------------------------------------------------------------*/
 # /*--- Aliases                                              ---*/
@@ -211,3 +213,5 @@ _tree() {
                     }
     done
 }
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
