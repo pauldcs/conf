@@ -14,6 +14,9 @@ export EDITOR=hx
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
 
+export HISTSIZE=100000
+export HISTFILESIZE=100000000
+
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
 export LESS_TERMCAP_me=$'\E[0m'
@@ -43,6 +46,7 @@ alias    ll='ls -alFh --color'
 alias    ls='ls -lF --color'
 alias    la='ls -Ah --color'
 alias     l='ls -CF --color'
+alis     c.='cd -'
 alias    ..='cd ..'
 alias   c..='cd ../..'
 alias  c...='cd ../../..'

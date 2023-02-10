@@ -1,12 +1,20 @@
-/*---  Darwin 22.1.0 arm64                                      4011798142 129 .inputrc  ---*/
+/*---  Darwin 22.1.0 arm64                                       794743678 670 .inputrc  ---*/
 /*---  macbook-pro-2.local                                                               ---*/
 /*---                                                                                    ---*/
 /*---                                           Created: Feb 10 05:06:15 2023 by pducos  ---*/
-/*---                                           Updated: Feb 10 05:26:37 2023 by pducos  ---*/
+/*---                                           Updated: Feb 10 06:13:13 2023 by pducos  ---*/
 
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-"\e[C": forward-word
-"\e[D": backward-word
+# cat .zsh_history \
+#	| sed 's/^.*;//' > .bash_history
 
-"\C-p": "\C-e | less"
+$if Bash
+	"\e[A": history-search-backward
+	"\e[B": history-search-forward
+	"\e[C": forward-word
+	"\e[D": backward-word
+
+	set history-size 1000
+	set ignore-dups on
+	
+	"\C-p": "\C-e | less"
+$endif
