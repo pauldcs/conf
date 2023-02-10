@@ -1,0 +1,12 @@
+/*---  Darwin 22.1.0 arm64                                      4011798142 129 .inputrc  ---*/
+/*---  macbook-pro-2.local                                                               ---*/
+/*---                                                                                    ---*/
+/*---                                           Created: Feb 10 05:06:15 2023 by pducos  ---*/
+/*---                                           Updated: Feb 10 05:26:37 2023 by pducos  ---*/
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-word
+"\e[D": backward-word
+
+"\C-p": "\C-e | less"
