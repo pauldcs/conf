@@ -1,8 +1,8 @@
-# /*---  Darwin 22.1.0 arm64                                      2834907631 6153 .bashrc  ---*/
-# /*---  macbook-pro-2.local                                                               ---*/
-# /*---                                                                                    ---*/
-# /*---                                           Created: Feb  8 10:33:16 2023 by pducos  ---*/
-# /*---                                           Updated: Feb  9 18:45:05 2023 by pducos  ---*/
+/*---  Darwin 22.1.0 arm64                                      2008587463 6322 .bashrc  ---*/
+/*---  macbook-pro-2.local                                                               ---*/
+/*---                                                                                    ---*/
+/*---                                           Created: Feb 10 02:15:46 2023 by pducos  ---*/
+/*---                                           Updated: Feb 10 05:07:56 2023 by pducos  ---*/
 
 shopt -s checkwinsize
 
