@@ -4,7 +4,7 @@
 #/*---                                           Created: Feb 10 14:49:57 2023 by pducos  ---*/
 #/*---                                           Updated: Feb 10 14:49:57 2023 by pducos  ---*/
 
-clear
+#!/bin/bash
 
 shopt -s checkwinsize
 shopt -s autocd
@@ -13,12 +13,14 @@ shopt -s autocd
 # /*--- Default                                              ---*/
 # /*------------------------------------------------------------*/
 
+PROMPT_COMMAND="printf '\n'"
+
 export EDITOR=hx
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
 
-export HISTSIZE=100000
-export HISTFILESIZE=100000000
+export HISTSIZE=1000000
+export HISTFILESIZE=1000000000
 
 export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
 export LESS_TERMCAP_md=$(tput bold; tput setaf 6) # cyan
@@ -40,14 +42,14 @@ Green='\033[1;32m'
  Blue='\033[1;34m'
 Reset='\033[0m'
 
-PS1="$Cyan\u$Reset::\s-\v($Green\W$Reset) \j$ "
+PS1="$Cyan\u$Reset@\h $Green\w$Reset [\j] \t \n\$ "
 
 # /*------------------------------------------------------------*/
 # /*--- Aliases                                              ---*/
 # /*------------------------------------------------------------*/
 
-alias     e="$EDITOR"
-alias    ee="$EDITOR ."
+alias     e="\${EDITOR:-vi}"
+alias    ee="\${EDITOR:-vi} ."
 alias    ll='ls -alFh --color'
 alias    ls='ls -lF --color'
 alias    la='ls -Ah --color'
@@ -63,15 +65,15 @@ alias c....='cd ../../../..'
 # /*------------------------------------------------------------*/
 
 function stamp() {
-# 
+#
 # DESCRIPTION
 #         Add a header to files
-# 
+#
     [[ $# -lt 1 ]] \
         && printf >&2 "Usage: stamp <file_name>\n" \
         && return 1
 
-    [[ ! -f "$@" ]] \
+    [[ ! -f "$*" ]] \
         && printf >&2 " - No such file or directory\n" \
         && return 1
 
@@ -82,7 +84,7 @@ function stamp() {
                 local  time_up="$(stat -c '%y' $@)"
                 local  creator="$(stat -c '%U' $@)"
             }
-    
+
     [[ $(uname) == 'Darwin' ]] \
         && {
                 local tmp_file="$(mktemp)"
@@ -91,24 +93,24 @@ function stamp() {
                 local  creator="$(stat -f '%Su' $@)"
             }
 
- << __EOF__ cat > $tmp_file
-/*---  $(printf "%-40s%40s  ---*/"              ""                "$(cksum $@)")
+ << __EOF__ cat > "$tmp_file"
+/*---  $(printf "%-40s%40s  ---*/"             ""                "$(cksum "$@")")
 /*---  $(printf "%-40s%40s  ---*/"            ""                             "")
 /*---  $(printf      "%80s  ---*/"                                           "")
 /*---  $(printf      "%80s  ---*/"              "Created: $time_cr by $creator")
 /*---  $(printf      "%80s  ---*/"             "Updated: $time_up by $(whoami)")
 __EOF__
-    
-    grep -m 1 "/*--- " $@ &> /dev/null   \
-        && sed -n '6,$p' $@ >> $tmp_file \
-        || cat $@ >> $tmp_file
+
+    grep -m 1 "/*--- " "$@" &> /dev/null   \
+        && sed -n '6,$p' "$@" >> "$tmp_file" \
+        || cat "$@" >> "$tmp_file"
 
     # we cat the original file before overwriting it with the stamped one to
     # prevent any permanent losses in the case of a bug
-    cat $@
+    cat "$@"
 
-    cat $tmp_file > $@ 
-    rm $tmp_file
+    cat "$tmp_file" > "$@"
+    rm "$tmp_file"
 }
 
 function strgrep() {
@@ -128,12 +130,12 @@ function strgrep() {
         -r                               \
         --color=auto                     \
         --exclude-dir={.git,.svn}        \
-        --include \*$suffix              \
+        --include \*"$suffix"              \
         -e "$pattern" "$@" . 2>/dev/null \
             ||  {
                     [[ $? -eq 1 ]]                          \
-                        && printf >&2 " - No match found\n" \
-                        || printf >&2 " + Grep returned $?\n"
+                        && >&2 printf " - No match found\n" \
+                        || >&2 printf " + Grep returned %d\n" $?
                 }
 }
 
@@ -156,35 +158,35 @@ function memo() {
                 && printf >&2 " - Missing argument\n" \
                 && return 1
 
-            printf "${1}\n" >> "$memo_file"
+            printf "%s\n" "${1}" >> "$memo_file"
         ;;
         del)
             [ $# -ne 1 ] \
-                && printf >&2 " - Missing argument\n" \
+                && >&2 printf " - Missing argument\n" \
                 && return 1
 
             memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
-                && printf >&2 " - Not found\n" \
+                && >&2 printf " - Not found\n" \
                 && return 1
 
             sed -i -n "${1}d" "$memo_file" \
-                && printf >&2 " + Deleting '$memo'\n"
+                && >&2 printf " + Deleting %s\n" "$memo"
         ;;
         cp)
             [ $# -ne 1 ] \
-                && printf >&2 " - Missing argument\n" \
+                && >&2 printf " - Missing argument\n" \
                 && return 1
 
             memo="$(sed -n "${1}p" "$memo_file")"
             [ -z "$memo" ] \
-                && printf >&2 " - Not found\n" \
+                && >&2 printf " - Not found\n" \
                 && return 1
 
             [[ $(uname) == 'Darwin' ]] \
-                && printf "$memo" | pbcopy
+                && printf "%s" "$memo" | pbcopy
             [[ $(uname) == 'Linux' ]] \
-                && printf "$memo" | xclip -selection c
+                && printf "%s" "$memo" | xclip -selection c
             
             printf >&2 " + Copied\n"
         ;;
@@ -195,7 +197,7 @@ function memo() {
 }
 
 # Mimic of 'tree' command
-_tree() {
+function _tree() {
     [[ $# -lt 1 ]] \
         && printf >&2 "Usage: _tree <dir>\n" \
         && return 1
@@ -206,7 +208,7 @@ _tree() {
                 && printf "$2$Blue$f$Reset/\n" \
                 && _tree "$f" "$2     "        \
                 || {
-                        printf "$2"
+                        printf "%s" "$2"
                         line=$(ls -l $f \
                             | awk '{printf "%s [%8d] %s", $1, $5, $9}')
                         echo "$line"
@@ -214,4 +216,20 @@ _tree() {
     done
 }
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+function cmd {
+    local tempfile
+    tempfile="$(mktemp "$TMPDIR"/__temp__.sh)"
+    [[ -n "$EDITOR" ]] \
+        && {
+            "${EDITOR}" "$tempfile"
+            [[ -s "$tempfile" ]] \
+                && source "$tempfile"
+            rm -f "$tempfile"
+        }
+}
+
+#function command_not_found_handle()
+#{
+#
+#}
+

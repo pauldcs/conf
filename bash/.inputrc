@@ -9,14 +9,14 @@
 $if Bash
 	"\e[A": history-search-backward
 	"\e[B": history-search-forward
-	"\e[C": forward-word
-	"\e[D": backward-word
+	"\C-n": forward-word  
+	"\C-b": backward-word
 
-	set history-size 1000
+	set history-size 10000
 	set colored-stats on
 	set completion-ignore-case on
 	set show-all-if-ambiguous on
 	set visible-stats on
 
-	"\C-p": "\C-e | less"
+	"\C-p": "\C-e| less"
 $endif
