@@ -81,30 +81,25 @@ function stamp() {
     [[ $(uname) == 'Linux' ]] \
         && {
                 local tmp_file="$(mktemp)"
-                local  time_cr="$(stat -c '%w' $@)"
                 local  time_up="$(stat -c '%y' $@)"
-                local  creator="$(stat -c '%U' $@)"
             }
 
     [[ $(uname) == 'Darwin' ]] \
         && {
                 local tmp_file="$(mktemp)"
-                local  time_cr="$(stat -f '%SB' $@)"
                 local  time_up="$(stat -f '%Sa' $@)"
-                local  creator="$(stat -f '%Su' $@)"
             }
 
  << __EOF__ cat > "$tmp_file"
 /*---  $(printf "%-40s%40s  ---*/"                 "" "$(cksum "$@")")
 /*---  $(printf "%-40s%40s  ---*/"                              "" "")
 /*---  $(printf      "%80s  ---*/"                                 "")
-/*---  $(printf      "%80s  ---*/"    "Created: $time_cr by $creator")
 /*---  $(printf      "%80s  ---*/"   "Updated: $time_up by $(whoami)")
 
 __EOF__
 
     grep -m 1 "/*--- " "$@" &> /dev/null   \
-        && sed -n '7,$p' "$@" >> "$tmp_file" \
+        && sed -n '6,$p' "$@" >> "$tmp_file" \
         || cat "$@" >> "$tmp_file"
 
     # we cat the original file before overwriting it with the stamped one to
