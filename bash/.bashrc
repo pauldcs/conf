@@ -50,6 +50,7 @@ PS1="$Cyan\u$Reset@\h $Green\w$Reset [\j] \t \n\$ "
 
 alias     e="\${EDITOR:-vi}"
 alias    ee="\${EDITOR:-vi} ."
+alias    vm="/usr/local/bin/multipass"
 alias    ll='ls -alFh --color'
 alias    ls='ls -lF --color'
 alias    la='ls -Ah --color'
@@ -94,15 +95,16 @@ function stamp() {
             }
 
  << __EOF__ cat > "$tmp_file"
-/*---  $(printf "%-40s%40s  ---*/"             ""                "$(cksum "$@")")
-/*---  $(printf "%-40s%40s  ---*/"            ""                             "")
-/*---  $(printf      "%80s  ---*/"                                           "")
-/*---  $(printf      "%80s  ---*/"              "Created: $time_cr by $creator")
-/*---  $(printf      "%80s  ---*/"             "Updated: $time_up by $(whoami)")
+/*---  $(printf "%-40s%40s  ---*/"                 "" "$(cksum "$@")")
+/*---  $(printf "%-40s%40s  ---*/"                              "" "")
+/*---  $(printf      "%80s  ---*/"                                 "")
+/*---  $(printf      "%80s  ---*/"    "Created: $time_cr by $creator")
+/*---  $(printf      "%80s  ---*/"   "Updated: $time_up by $(whoami)")
+
 __EOF__
 
     grep -m 1 "/*--- " "$@" &> /dev/null   \
-        && sed -n '6,$p' "$@" >> "$tmp_file" \
+        && sed -n '7,$p' "$@" >> "$tmp_file" \
         || cat "$@" >> "$tmp_file"
 
     # we cat the original file before overwriting it with the stamped one to
@@ -117,7 +119,7 @@ function strgrep() {
 # 
 # DESCRIPTION
 #        Searches for <pattern> in files ending in
-#	 	 <suffix> in the current directory,
+#	 	 <suffix> in the current directory + subdirectories
 # 
     [[ $# -lt 2 ]] \
         && printf >&2 "Usage: strgrep <suffix> <pattern> [<grep_options>]\n" \
@@ -214,18 +216,6 @@ function _tree() {
                         echo "$line"
                     }
     done
-}
-
-function cmd {
-    local tempfile
-    tempfile="$(mktemp "$TMPDIR"/__temp__.sh)"
-    [[ -n "$EDITOR" ]] \
-        && {
-            "${EDITOR}" "$tempfile"
-            [[ -s "$tempfile" ]] \
-                && source "$tempfile"
-            rm -f "$tempfile"
-        }
 }
 
 #function command_not_found_handle()
