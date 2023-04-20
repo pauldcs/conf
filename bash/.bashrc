@@ -6,18 +6,17 @@
 
 #!/bin/bash
 
-shopt -s checkwinsize
-shopt -s autocd
+#shopt -s checkwinsize
+#shopt -s autocd
 
 # /*------------------------------------------------------------*/
 # /*--- Default                                              ---*/
 # /*------------------------------------------------------------*/
 
-PROMPT_COMMAND="printf '\n'"
-
 export EDITOR=hx
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
+export PATH=/usr/local/bin:$PATH
 
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000000
@@ -42,8 +41,7 @@ Green='\033[1;32m'
  Blue='\033[1;34m'
 Reset='\033[0m'
 
-PS1="$Cyan\u$Reset@\h $Green\w$Reset [\j] \t \n\$ "
-
+PS1="$Cyan\u$Reset @\h $Green\w$Reset [\j] \t\n$ "
 # /*------------------------------------------------------------*/
 # /*--- Aliases                                              ---*/
 # /*------------------------------------------------------------*/
@@ -60,6 +58,7 @@ alias    ..='cd ..'
 alias   c..='cd ../..'
 alias  c...='cd ../../..'
 alias c....='cd ../../../..'
+alias  path='echo $PATH | tr ":" "\n" | nl'
 
 # /*------------------------------------------------------------*/
 # /*--- Functions                                            ---*/
@@ -193,28 +192,12 @@ function memo() {
     esac
 }
 
-# Mimic of 'tree' command
-function _tree() {
-    [[ $# -lt 1 ]] \
-        && printf >&2 "Usage: _tree <dir>\n" \
-        && return 1
-
-    for f in "$1"/*;
-        do
-            [ -d "$f" ] \
-                && printf "$2$Blue$f$Reset/\n" \
-                && _tree "$f" "$2     "        \
-                || {
-                        printf "%s" "$2"
-                        line=$(ls -l $f \
-                            | awk '{printf "%s [%8d] %s", $1, $5, $9}')
-                        echo "$line"
-                    }
-    done
-}
-
 #function command_not_found_handle()
 #{
 #
 #}
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
