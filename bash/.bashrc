@@ -58,7 +58,12 @@ alias    ..='cd ..'
 alias   c..='cd ../..'
 alias  c...='cd ../../..'
 alias c....='cd ../../../..'
+alias c....='cd ../../../..'
+alias  cate="open -a TextEdit"
+alias   cat="bat"
 alias  path='echo $PATH | tr ":" "\n" | nl'
+alias ghidra="/Users/pducos/lib/ghidra/ghidraRun"
+alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 
 # /*------------------------------------------------------------*/
 # /*--- Functions                                            ---*/
