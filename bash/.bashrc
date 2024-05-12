@@ -1,9 +1,3 @@
-#/*---                                                           3548807796 6682 .bashrc  ---*/
-#/*---                                                                                    ---*/
-#/*---                                                                                    ---*/
-#/*---                                           Created: Feb 10 14:49:57 2023 by pducos  ---*/
-#/*---                                           Updated: Feb 10 14:49:57 2023 by pducos  ---*/
-
 #!/bin/bash
 
 #shopt -s checkwinsize
@@ -17,6 +11,7 @@ export EDITOR=hx
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
 export PATH=/usr/local/bin:$PATH
+export PATH=/opt/metasploit-framework/bin:$PATH
 
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000000
@@ -41,16 +36,16 @@ Green='\033[1;32m'
  Blue='\033[1;34m'
 Reset='\033[0m'
 
-PS1="$Cyan\u$Reset @\h $Green\w$Reset [\j] \t\n$ "
+#PS1="$Cyan\u$Reset @\h $Green\w$Reset $ "
+PS1="$Cyan\u$Reset @\h $Green\w$Reset [\j]\n$ "
 # /*------------------------------------------------------------*/
 # /*--- Aliases                                              ---*/
 # /*------------------------------------------------------------*/
 
 alias     e="\${EDITOR:-vi}"
 alias    ee="\${EDITOR:-vi} ."
-alias    vm="/usr/local/bin/multipass"
 alias    ll='ls -alFh --color'
-alias    ls='ls -lF --color'
+alias    ls='ls -lFa --color'
 alias    la='ls -Ah --color'
 alias     l='ls -CF --color'
 alias    c.='cd -'
@@ -60,11 +55,11 @@ alias  c...='cd ../../..'
 alias c....='cd ../../../..'
 alias c....='cd ../../../..'
 alias  cate="open -a TextEdit"
-alias   cat="bat"
 alias  path='echo $PATH | tr ":" "\n" | nl'
 alias ghidra="/Users/pducos/lib/ghidra/ghidraRun"
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-
+alias gs="clear; git status"
+alias "::"="clear && "
 # /*------------------------------------------------------------*/
 # /*--- Functions                                            ---*/
 # /*------------------------------------------------------------*/
@@ -85,13 +80,13 @@ function stamp() {
     [[ $(uname) == 'Linux' ]] \
         && {
                 local tmp_file="$(mktemp)"
-                local  time_up="$(stat -c '%y' $@)"
+                local  time_up="$(stat -c '%y' "$@")"
             }
 
     [[ $(uname) == 'Darwin' ]] \
         && {
                 local tmp_file="$(mktemp)"
-                local  time_up="$(stat -f '%Sa' $@)"
+                local  time_up="$(stat -f '%Sa' "$@")"
             }
 
  << __EOF__ cat > "$tmp_file"
@@ -140,69 +135,13 @@ function strgrep() {
                 }
 }
 
-function memo() {
-# 
-# DESCRIPTION
-#        memo is a bash function to manage a memo file stored in ~/.memo. Actions:
-#            memo: Display memo file
-#            memo add "text": Add a memo
-#            memo del N: Delete memo at line N
-#            memo cp N: Copy memo at line N to clipboard
-# 
-    local memo_file=~/.memo
-    local action="$1"
-    shift
-
-    case "$action" in
-        add)
-            [ $# -ne 1 ] \
-                && printf >&2 " - Missing argument\n" \
-                && return 1
-
-            printf "%s\n" "${1}" >> "$memo_file"
-        ;;
-        del)
-            [ $# -ne 1 ] \
-                && >&2 printf " - Missing argument\n" \
-                && return 1
-
-            memo="$(sed -n "${1}p" "$memo_file")"
-            [ -z "$memo" ] \
-                && >&2 printf " - Not found\n" \
-                && return 1
-
-            sed -i -n "${1}d" "$memo_file" \
-                && >&2 printf " + Deleting %s\n" "$memo"
-        ;;
-        cp)
-            [ $# -ne 1 ] \
-                && >&2 printf " - Missing argument\n" \
-                && return 1
-
-            memo="$(sed -n "${1}p" "$memo_file")"
-            [ -z "$memo" ] \
-                && >&2 printf " - Not found\n" \
-                && return 1
-
-            [[ $(uname) == 'Darwin' ]] \
-                && printf "%s" "$memo" | pbcopy
-            [[ $(uname) == 'Linux' ]] \
-                && printf "%s" "$memo" | xclip -selection c
-            
-            printf >&2 " + Copied\n"
-        ;;
-        *)
-            nl "$memo_file"
-        ;;
-    esac
-}
-
 #function command_not_found_handle()
 #{
 #
 #}
 
-
+# retarded web dev thing
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. "$HOME/.cargo/env"
