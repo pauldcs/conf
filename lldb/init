@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SOURCE_DIR="source"
+ BUILD_DIR="build"
+
+for source_file in "${SOURCE_DIR}"/*.cmd; do
+    echo generating module from "${source_file}"
+    if [[ -f "${source_file}" ]]; then
+        module_name=$(basename "${source_file}" .cmd)
+        ./lldbmodgen \
+                --gen "${source_file}" \
+                "${module_name}" \
+                > "${BUILD_DIR}"/"${module_name}".py
+    fi
+done

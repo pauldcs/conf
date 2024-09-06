@@ -12,6 +12,7 @@ export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
 export PATH=/usr/local/bin:$PATH
 export PATH=/opt/metasploit-framework/bin:$PATH
+export PYTHONPATH="$(lldb -P)"
 
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000000
@@ -37,7 +38,7 @@ Green='\033[1;32m'
 Reset='\033[0m'
 
 #PS1="$Cyan\u$Reset @\h $Green\w$Reset $ "
-PS1="$Cyan\u$Reset @\h $Green\w$Reset [\j]\n$ "
+PS1="$Cyan\w$Reset [\j]\n; "
 # /*------------------------------------------------------------*/
 # /*--- Aliases                                              ---*/
 # /*------------------------------------------------------------*/

@@ -1,0 +1,18 @@
+settings set target.inline-breakpoint-strategy always
+settings set symbols.enable-external-lookup false
+settings set use-color true
+settings set show-autosuggestion true
+settings set auto-confirm true
+
+target stop-hook add -o "bt"
+target stop-hook add -o "frame variable"
+target stop-hook add -o "disassemble -c 8"
+
+command alias    args settings set target.run-args 
+command alias      rr register read
+command alias      rw register write
+command alias       d disassemble
+command alias     pdf disassemble -a %1
+
+command script import ~/Files/conf/lldb/_install.py
+command script import ~/Files/conf/lldb/_lldb_script_run.py

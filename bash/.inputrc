@@ -4,8 +4,6 @@
 #/*---                                           Created: Feb 10 14:49:41 2023 by pducos  ---*/
 #/*---                                           Updated: Feb 10 14:49:41 2023 by pducos  ---*/
 
-#cat .zsh_history | cut -c 16- > .bash_history
-
 $if Bash
 	"\e[A": history-search-backward
 	"\e[B": history-search-forward
