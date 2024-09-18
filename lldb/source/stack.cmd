@@ -12,6 +12,10 @@ num_elements_after = 16
 start_addr = sp - num_elements_before * addr_byte_size
 end_addr = sp + num_elements_after * addr_byte_size
 
+if not frame:
+    result.AppendMessage("no stack frame")
+    return
+
 for i, addr in enumerate(range(start_addr, end_addr, addr_byte_size)):
     error = lldb.SBError()
     value = process.ReadUnsignedFromMemory(addr, addr_byte_size, error)
